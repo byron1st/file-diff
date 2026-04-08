@@ -18,8 +18,9 @@ Enhanced Diff Engine is a Go-based port of the JetBrains IDE's multi-stage diff 
 
 ```text
 diff/
-├── comparison/       # Core comparison logic: policies, matchers, iterables, text utilities
+├── comparison/       # Core comparison logic: policies, matchers, iterables, ByLine, text utilities
 ├── fragment/         # Diff result types: DiffFragment (word/char), LineFragment (line)
+├── myers/            # Myers O(ND) LCS algorithm, BitSet, Reindexer, Change builder
 └── util/             # Shared types: Range, LineOffsets, Enumerator
 references/           # JetBrains IntelliJ diff source (Kotlin) — read-only reference
 ```
