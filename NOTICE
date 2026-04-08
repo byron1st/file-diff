@@ -1,0 +1,28 @@
+Enhanced Diff Engine
+Copyright 2025 byron1st
+
+This project contains code ported from the following sources:
+
+---
+
+JetBrains IntelliJ Community Edition - Diff Engine
+Copyright 2000-2025 JetBrains s.r.o. and contributors.
+Licensed under the Apache License, Version 2.0.
+https://github.com/JetBrains/intellij-community
+
+The following components were ported from Kotlin/Java to Go with modifications:
+- ComparisonPolicy, ComparisonUtil, TrimUtil
+- DiffIterable, FairDiffIterable, and related iterable implementations
+- DiffFragment, LineFragment, and related fragment types
+- Range, LineOffsets, Enumerator
+- ByLineRt (line-level diff), ByWordRt (word-level diff), ByCharRt (char-level diff)
+- Myers LCS algorithm and related utilities
+
+---
+
+peter-evans/patience - Patience Diff
+Copyright (c) 2019 Peter Evans
+Licensed under the MIT License.
+https://github.com/peter-evans/patience
+
+Referenced for Patience Diff and Histogram Diff algorithm implementations.
