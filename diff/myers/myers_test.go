@@ -108,4 +108,7 @@ func TestBuildChanges_Modification(t *testing.T) {
 	if ch.Deleted != 1 || ch.Inserted != 1 {
 		t.Fatalf("expected 1 deleted + 1 inserted, got del=%d ins=%d", ch.Deleted, ch.Inserted)
 	}
+	if ch.Line0 != 1 || ch.Line1 != 1 {
+		t.Fatalf("expected change at position 1, got line0=%d line1=%d", ch.Line0, ch.Line1)
+	}
 }

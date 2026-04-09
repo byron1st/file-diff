@@ -6,6 +6,7 @@ Enhanced Diff Engine is a Go-based port of the JetBrains IDE's multi-stage diff 
 
 - **High Readability**: Clear distinction of structural code changes and in-line token modifications to improve the code-review experience.
 - **Pluggable Architecture**: The line matching algorithms (Myers, Patience, Histogram) must be abstracted through an interface and easily swappable.
+- **Minimal dependencies**: Prefer to use standard library.
 
 ## Architecture
 
@@ -18,7 +19,7 @@ Enhanced Diff Engine is a Go-based port of the JetBrains IDE's multi-stage diff 
 
 ```text
 diff/
-├── comparison/       # Core comparison logic: policies, matchers, iterables, ByLine, text utilities
+├── comparison/       # Core comparison logic: policies, matchers, iterables, ByLine, ByWord, ByChar, text utilities
 ├── fragment/         # Diff result types: DiffFragment (word/char), LineFragment (line)
 ├── myers/            # Myers O(ND) LCS algorithm, BitSet, Reindexer, Change builder
 └── util/             # Shared types: Range, LineOffsets, Enumerator

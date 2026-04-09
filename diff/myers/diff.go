@@ -109,7 +109,7 @@ type changeBuilder struct {
 }
 
 func (b *changeBuilder) AddChange(first, second int) {
-	ch := &Change{Line0: b.index1, Line1: b.index2, Deleted: first, Inserted: second}
+	ch := &Change{Line0: b.startShift + b.index1, Line1: b.startShift + b.index2, Deleted: first, Inserted: second}
 	if b.last != nil {
 		b.last.Link = ch
 	} else {
