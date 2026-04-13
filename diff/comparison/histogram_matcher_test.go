@@ -260,6 +260,20 @@ func TestHistogramMatcher_AllDifferent(t *testing.T) {
 	}
 }
 
+func TestHistogramMyersFallback_BothEmpty(t *testing.T) {
+	result := histogramMyersFallback(nil, nil)
+	if result != nil {
+		t.Fatalf("expected nil for empty inputs, got %v", result)
+	}
+}
+
+func TestHistogramMyersFallback_OneEmpty(t *testing.T) {
+	result := histogramMyersFallback([]string{"a"}, nil)
+	if result != nil {
+		t.Fatalf("expected nil for one empty input, got %v", result)
+	}
+}
+
 func TestHistogramMatcher_BraceMisalignment(t *testing.T) {
 	left := strings.Split("func alpha() {\n  doA()\n}\n\nfunc beta() {\n  doB()\n}", "\n")
 	right := strings.Split("func alpha() {\n  doA()\n  doA2()\n}\n\nfunc beta() {\n  doB()\n}", "\n")

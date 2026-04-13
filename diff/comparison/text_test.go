@@ -54,3 +54,18 @@ func TestHashCode_ConsistentWithPolicy(t *testing.T) {
 		t.Fatal("strings ignoring whitespace should have same hash")
 	}
 }
+
+func TestEqualsIgnoreWhitespaces_TrailingSpace(t *testing.T) {
+	// s1 has trailing non-space chars after s2 is exhausted
+	if IsEqual("abc  x", "abc", PolicyIgnoreWhitespaces) {
+		t.Fatal("expected not equal: s1 has extra non-space char")
+	}
+	// s2 has trailing non-space chars after s1 is exhausted
+	if IsEqual("abc", "abc  x", PolicyIgnoreWhitespaces) {
+		t.Fatal("expected not equal: s2 has extra non-space char")
+	}
+	// Both have only trailing spaces
+	if !IsEqual("abc   ", "abc  ", PolicyIgnoreWhitespaces) {
+		t.Fatal("expected equal: only trailing spaces differ")
+	}
+}

@@ -221,3 +221,45 @@ func TestCompareWords_BothEmpty(t *testing.T) {
 		t.Fatalf("expected no changes for empty vs empty, got %v", fragments)
 	}
 }
+
+func TestNewlineChunk_Offsets(t *testing.T) {
+	nc := newNewlineChunk(5)
+	if nc.Offset1() != 5 {
+		t.Fatalf("expected Offset1=5, got %d", nc.Offset1())
+	}
+	if nc.Offset2() != 6 {
+		t.Fatalf("expected Offset2=6, got %d", nc.Offset2())
+	}
+}
+
+func TestNewlineChunk_ChunkKey(t *testing.T) {
+	nc := newNewlineChunk(0)
+	key := nc.chunkKey()
+	if key.isWord {
+		t.Fatal("expected isWord=false for NewlineChunk")
+	}
+	if key.content != "\n" {
+		t.Fatalf("expected content='\\n', got %q", key.content)
+	}
+}
+
+func TestCompareWords_MultiLine(t *testing.T) {
+	// Multi-line input exercises newline chunk handling
+	fragments, err := CompareWords("hello\nworld", "hello\nearth", PolicyDefault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fragments) == 0 {
+		t.Fatal("expected changes for multi-line word difference")
+	}
+}
+
+func TestCompareWords_Deletion(t *testing.T) {
+	fragments, err := CompareWords("a b c", "a c", PolicyDefault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fragments) == 0 {
+		t.Fatal("expected changes for word deletion")
+	}
+}

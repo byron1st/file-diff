@@ -10,6 +10,7 @@ func TestComparisonPolicy_String(t *testing.T) {
 		{PolicyDefault, "DEFAULT"},
 		{PolicyTrimWhitespaces, "TRIM_WHITESPACES"},
 		{PolicyIgnoreWhitespaces, "IGNORE_WHITESPACES"},
+		{ComparisonPolicy(99), "UNKNOWN"},
 	}
 	for _, tt := range tests {
 		if got := tt.p.String(); got != tt.want {

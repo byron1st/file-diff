@@ -74,3 +74,47 @@ func TestLineOffsets_LineEndWithNewline(t *testing.T) {
 		t.Errorf("last line with-newline: got %d, want 8", got)
 	}
 }
+
+func TestLineOffsets_TextLength(t *testing.T) {
+	lo := NewLineOffsets("ab\ncd\nef")
+	if lo.TextLength() != 8 {
+		t.Fatalf("expected text length 8, got %d", lo.TextLength())
+	}
+}
+
+func TestLineOffsets_TextLength_Empty(t *testing.T) {
+	lo := NewLineOffsets("")
+	if lo.TextLength() != 0 {
+		t.Fatalf("expected text length 0, got %d", lo.TextLength())
+	}
+}
+
+func TestLineOffsets_CheckLineIndex_Panic(t *testing.T) {
+	lo := NewLineOffsets("ab\ncd")
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("expected panic for out-of-range line index")
+		}
+	}()
+	lo.LineStart(5)
+}
+
+func TestLineOffsets_CheckLineIndex_NegativePanic(t *testing.T) {
+	lo := NewLineOffsets("ab\ncd")
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("expected panic for negative line index")
+		}
+	}()
+	lo.LineStart(-1)
+}
+
+func TestLineOffsets_LineNumber_Panic(t *testing.T) {
+	lo := NewLineOffsets("abc")
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fatal("expected panic for negative offset")
+		}
+	}()
+	lo.LineNumber(-1)
+}

@@ -161,6 +161,58 @@ func TestGetPunctuationChars(t *testing.T) {
 	}
 }
 
+func TestCompareCharsTrimWhitespaces_SameContent(t *testing.T) {
+	result, err := CompareCharsTrimWhitespaces("  hello  ", "hello")
+	if err != nil {
+		t.Fatal(err)
+	}
+	changes := result.Changes()
+	if len(changes) != 0 {
+		t.Fatalf("expected no changes when trimming whitespace, got %v", changes)
+	}
+}
+
+func TestCompareCharsTrimWhitespaces_RealDifference(t *testing.T) {
+	result, err := CompareCharsTrimWhitespaces("  abc  ", "  axc  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	changes := result.Changes()
+	if len(changes) == 0 {
+		t.Fatal("expected changes for real difference")
+	}
+}
+
+func TestCompareChars_BothEmpty(t *testing.T) {
+	result, err := CompareChars("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Changes()) != 0 {
+		t.Fatalf("expected no changes, got %v", result.Changes())
+	}
+}
+
+func TestCompareCharsIgnoreWhitespaces_BothEmpty(t *testing.T) {
+	result, err := CompareCharsIgnoreWhitespaces("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Changes()) != 0 {
+		t.Fatalf("expected no changes, got %v", result.Changes())
+	}
+}
+
+func TestCompareCharsIgnoreWhitespaces_OnlySpaces(t *testing.T) {
+	result, err := CompareCharsIgnoreWhitespaces("   ", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Changes()) != 0 {
+		t.Fatalf("expected no changes for only-space comparison, got %v", result.Changes())
+	}
+}
+
 func assertRange(t *testing.T, r util.Range, start1, end1, start2, end2 int) {
 	t.Helper()
 	if r.Start1 != start1 || r.End1 != end1 || r.Start2 != start2 || r.End2 != end2 {

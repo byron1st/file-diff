@@ -3,15 +3,6 @@
 deps:
 	@go list -u -m -json all | go-mod-outdated -update -direct
 
-.PHONY: mockgen
-# Generate mocks for interfaces in the project
-mockgen:
-	command -v mockery >/dev/null 2>&1 || go install github.com/vektra/mockery/v3@latest
-	rm -rf internal/mocks && mkdir internal/mocks
-	mockery
-	find internal/mocks -type f -name '*.go' -exec perl -pi -e 's/interface\{\}/any/g' {} +
-	find internal/mocks -type f -name '*.go' -exec gofmt -w {} +
-
 .PHONY: format lint clean-testcache test race
 # Run linters and modernize checks
 check: format lint
@@ -33,6 +24,12 @@ clean-testcache:
 # Clean test caches and run tests
 test: clean-testcache
 	@go test ./...
+
+# Clean test caches, run tests with coverage, and generate an HTML coverage report
+test-coverage: clean-testcache
+	@go test -coverprofile=coverage.out ./...
+	@go tool cover -html=coverage.out -o coverage.html
+	@go tool cover -func=coverage.out | grep total | awk '{print $3}'
 
 # Clean test caches and run race tests
 race: clean-testcache
