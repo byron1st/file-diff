@@ -25,6 +25,12 @@ clean-testcache:
 test: clean-testcache
 	@go test ./...
 
+# Clean test caches, run tests with coverage, and generate an HTML coverage report
+test-coverage: clean-testcache
+	@go test -coverprofile=coverage.out ./...
+	@go tool cover -html=coverage.out -o coverage.html
+	@go tool cover -func=coverage.out | grep total | awk '{print $3}'
+
 # Clean test caches and run race tests
 race: clean-testcache
 	@go test -short -race ./...
