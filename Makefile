@@ -3,15 +3,6 @@
 deps:
 	@go list -u -m -json all | go-mod-outdated -update -direct
 
-.PHONY: mockgen
-# Generate mocks for interfaces in the project
-mockgen:
-	command -v mockery >/dev/null 2>&1 || go install github.com/vektra/mockery/v3@latest
-	rm -rf internal/mocks && mkdir internal/mocks
-	mockery
-	find internal/mocks -type f -name '*.go' -exec perl -pi -e 's/interface\{\}/any/g' {} +
-	find internal/mocks -type f -name '*.go' -exec gofmt -w {} +
-
 .PHONY: format lint clean-testcache test race
 # Run linters and modernize checks
 check: format lint
