@@ -1,3 +1,3 @@
 module github.com/byron1st/file-diff
 
-go 1.26.1
+go 1.22
