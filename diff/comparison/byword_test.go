@@ -263,3 +263,48 @@ func TestCompareWords_Deletion(t *testing.T) {
 		t.Fatal("expected changes for word deletion")
 	}
 }
+
+func TestCompareWords_UTF8FragmentOffsets(t *testing.T) {
+	left := "go 한글 test"
+	right := "go 한 test"
+
+	fragments, err := CompareWords(left, right, PolicyDefault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fragments) != 1 {
+		t.Fatalf("expected 1 change, got %d", len(fragments))
+	}
+
+	f := fragments[0]
+	if got := left[f.StartOffset1:f.EndOffset1]; got != "한글" {
+		t.Fatalf("expected left fragment to be '한글', got %q", got)
+	}
+	if got := right[f.StartOffset2:f.EndOffset2]; got != "한" {
+		t.Fatalf("expected right fragment to be '한', got %q", got)
+	}
+	if f.StartOffset1 != len("go ") || f.EndOffset1 != len("go 한글") {
+		t.Fatalf("unexpected UTF-8 offsets for left fragment: %v", f)
+	}
+	if f.StartOffset2 != len("go ") || f.EndOffset2 != len("go 한") {
+		t.Fatalf("unexpected UTF-8 offsets for right fragment: %v", f)
+	}
+}
+
+func TestCompareWords_PunctuationInsertionAroundRepeatedWords(t *testing.T) {
+	left := "foo(bar) baz"
+	right := "foo(bar)(bar) baz"
+
+	fragments, err := CompareWords(left, right, PolicyDefault)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fragments) != 1 {
+		t.Fatalf("expected 1 change, got %d", len(fragments))
+	}
+
+	f := fragments[0]
+	if got := right[f.StartOffset2:f.EndOffset2]; got != "(bar)" {
+		t.Fatalf("expected inserted punctuation-wrapped word, got %q", got)
+	}
+}
