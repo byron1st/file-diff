@@ -90,42 +90,30 @@ for _, r := range diff.Changes() {
 
 ### 다단계 비교 (라인 + 워드)
 
-라인 비교 후, 변경된 라인에 대해 워드 비교를 적용하는 패턴입니다. GUI diff 뷰어 등에서 유용합니다.
+라인 비교 후, 변경된 라인에 대해 워드 비교를 적용한 `[]fragment.LineFragment` 를 바로 얻을 수 있습니다. GUI diff 뷰어 등에서 유용합니다.
 
 ```go
 import (
     "strings"
 
     "github.com/byron1st/file-diff/diff/comparison"
-    "github.com/byron1st/file-diff/diff/fragment"
 )
 
 lines1 := strings.Split(text1, "\n")
 lines2 := strings.Split(text2, "\n")
 
-matcher := &comparison.HistogramMatcher{}
-lineDiff := matcher.Match(lines1, lines2, comparison.PolicyDefault)
-
-var lineFragments []fragment.LineFragment
-
-for _, r := range lineDiff.Changes() {
-    changedLeft := strings.Join(lines1[r.Start1:r.End1], "\n")
-    changedRight := strings.Join(lines2[r.Start2:r.End2], "\n")
-
-    // 워드 수준 내부 변경 사항 추출
-    innerFragments, err := comparison.CompareWords(changedLeft, changedRight, comparison.PolicyDefault)
-    if err != nil {
-        innerFragments = nil
-    }
-
-    lf := fragment.NewLineFragment(
-        r.Start1, r.End1, r.Start2, r.End2,
-        0, len(changedLeft), 0, len(changedRight),
-        innerFragments,
-    )
-    lineFragments = append(lineFragments, lf)
+fragments, err := comparison.CompareLineFragments(
+    lines1,
+    lines2,
+    &comparison.HistogramMatcher{},
+    comparison.PolicyDefault,
+)
+if err != nil {
+    // handle error
 }
 ```
+
+필요하면 여전히 `LineMatcher.Match()` 와 `CompareWords()` 를 직접 조합하는 저수준 패턴도 사용할 수 있습니다.
 
 ## 알고리즘
 
