@@ -1,7 +1,7 @@
 package comparison
 
 import (
-	"github.com/byron1st/file-diff/diff/histogram"
+	"github.com/byron1st/file-diff/go/histogram"
 )
 
 // HistogramMatcher implements LineMatcher using the Histogram Diff algorithm.

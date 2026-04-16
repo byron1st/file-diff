@@ -3,7 +3,7 @@ package comparison
 import (
 	"testing"
 
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 // dummyIterable is a minimal FairDiffIterable for testing the interface.

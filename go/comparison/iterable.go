@@ -3,7 +3,7 @@
 
 package comparison
 
-import "github.com/byron1st/file-diff/diff/util"
+import "github.com/byron1st/file-diff/go/util"
 
 // DiffIterable represents computed differences between two sequences.
 //

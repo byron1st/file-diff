@@ -6,7 +6,7 @@ package comparison
 import (
 	"testing"
 
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 func TestCompareChars_Identical(t *testing.T) {
@@ -210,6 +210,45 @@ func TestCompareCharsIgnoreWhitespaces_OnlySpaces(t *testing.T) {
 	}
 	if len(result.Changes()) != 0 {
 		t.Fatalf("expected no changes for only-space comparison, got %v", result.Changes())
+	}
+}
+
+func TestCompareChars_MultiByteRuneChange(t *testing.T) {
+	result, err := CompareChars("a한b", "a😀b")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	changes := result.Changes()
+	if len(changes) != 1 {
+		t.Fatalf("expected 1 change, got %d: %v", len(changes), changes)
+	}
+
+	assertRange(t, changes[0], 1, len("a한"), 1, len("a😀"))
+}
+
+func TestCompareCharsIgnoreWhitespaces_InsertionRange(t *testing.T) {
+	result, err := CompareCharsIgnoreWhitespaces("ab", "a x b")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	changes := result.Changes()
+	if len(changes) != 1 {
+		t.Fatalf("expected 1 change, got %d: %v", len(changes), changes)
+	}
+
+	assertRange(t, changes[0], 1, 1, 2, 3)
+}
+
+func TestCompareCharsTrimWhitespaces_UTF8LeadingAndTrailingSpaces(t *testing.T) {
+	result, err := CompareCharsTrimWhitespaces("  한글  ", "한글")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(result.Changes()) != 0 {
+		t.Fatalf("expected no changes when trimming UTF-8 surrounding spaces, got %v", result.Changes())
 	}
 }
 

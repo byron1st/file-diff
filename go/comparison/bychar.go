@@ -6,7 +6,7 @@ package comparison
 import (
 	"unicode/utf8"
 
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 // codePointsOffsets stores non-space (or punctuation) code points along with

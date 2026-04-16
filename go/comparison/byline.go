@@ -6,8 +6,8 @@ package comparison
 import (
 	"unicode"
 
-	"github.com/byron1st/file-diff/diff/myers"
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/myers"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 // Line wraps a line of text with its comparison policy, cached hash, and

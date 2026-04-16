@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/byron1st/file-diff/diff/patience"
+	"github.com/byron1st/file-diff/go/patience"
 )
 
 // PatienceMatcher implements LineMatcher using the Patience Diff algorithm.

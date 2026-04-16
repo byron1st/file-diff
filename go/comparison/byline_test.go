@@ -204,3 +204,57 @@ func TestCompareLines_LargeFile(t *testing.T) {
 		t.Fatalf("unexpected change position: %v", changes[0])
 	}
 }
+
+func TestCompareLines_TrimWhitespaces_RepeatedLinesPreferExactAlignment(t *testing.T) {
+	left := []string{"same", "foo", " foo", "bar"}
+	right := []string{"same", " foo", "foo", "foo", "bar"}
+
+	result := CompareLines(left, right, PolicyTrimWhitespaces)
+	changes := result.Changes()
+	if len(changes) != 1 {
+		t.Fatalf("expected 1 change, got %d", len(changes))
+	}
+
+	ch := changes[0]
+	if ch.Start1 != 3 || ch.End1 != 3 || ch.Start2 != 3 || ch.End2 != 4 {
+		t.Fatalf("unexpected change after exact alignment correction: %v", ch)
+	}
+}
+
+func TestCompareLines_RepeatedInsertionKeepsSingleChange(t *testing.T) {
+	left := []string{"alpha", "beta", "gamma"}
+	right := []string{"alpha", "beta", "beta", "gamma"}
+
+	result := CompareLines(left, right, PolicyDefault)
+	changes := result.Changes()
+	if len(changes) != 1 {
+		t.Fatalf("expected 1 change, got %d", len(changes))
+	}
+
+	ch := changes[0]
+	if ch.Start1 != 2 || ch.End1 != 2 || ch.Start2 != 2 || ch.End2 != 3 {
+		t.Fatalf("unexpected repeated-line insertion range: %v", ch)
+	}
+}
+
+func TestCompareLines_TrimWhitespaces_RepeatedGroupBeforeExactMatch(t *testing.T) {
+	left := []string{"same", "foo", " foo", "zap", "bar"}
+	right := []string{"same", " foo", "foo", " foo", "zap", "bar"}
+
+	result := CompareLines(left, right, PolicyTrimWhitespaces)
+	changes := result.Changes()
+	if len(changes) != 1 {
+		t.Fatalf("expected 1 change, got %d", len(changes))
+	}
+
+	ch := changes[0]
+	if ch.Start1 != ch.End1 {
+		t.Fatalf("expected insertion-only change, got %v", ch)
+	}
+	if ch.End2-ch.Start2 != 1 {
+		t.Fatalf("expected a single inserted line, got %v", ch)
+	}
+	if got := strings.TrimSpace(right[ch.Start2]); got != "foo" {
+		t.Fatalf("expected inserted trim-equal line to be foo, got %q", got)
+	}
+}

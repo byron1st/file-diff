@@ -4,8 +4,8 @@
 package comparison
 
 import (
-	"github.com/byron1st/file-diff/diff/myers"
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/myers"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 // CreateFromRanges creates a DiffIterable from a list of changed ranges.

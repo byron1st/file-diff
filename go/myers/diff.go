@@ -3,7 +3,7 @@
 
 package myers
 
-import "github.com/byron1st/file-diff/diff/util"
+import "github.com/byron1st/file-diff/go/util"
 
 const (
 	deltaThresholdSize       = 20000

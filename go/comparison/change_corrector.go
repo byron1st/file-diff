@@ -3,7 +3,7 @@
 
 package comparison
 
-import "github.com/byron1st/file-diff/diff/util"
+import "github.com/byron1st/file-diff/go/util"
 
 // smartLineChangeCorrector corrects a "big lines only" diff by filling in
 // the gaps with a full diff of all lines. This is the two-step approach

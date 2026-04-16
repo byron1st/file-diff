@@ -34,3 +34,11 @@ test-coverage: clean-testcache
 # Clean test caches and run race tests
 race: clean-testcache
 	@go test -short -race ./...
+
+EXCLUDE := (mocks|docs|cmd)
+PACKAGES := $(shell go list ./... | grep -v -E '$(EXCLUDE)')
+
+.PHONY: coverage
+coverage:
+	go test $(PACKAGES) -coverprofile=coverage.out
+	go tool cover -func=coverage.out | grep total | awk '{print $$3}'
