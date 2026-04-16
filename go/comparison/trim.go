@@ -3,7 +3,7 @@
 
 package comparison
 
-import "github.com/byron1st/file-diff/diff/util"
+import "github.com/byron1st/file-diff/go/util"
 
 // trimTextRange trims whitespace from both ends of the ranges within text1 and text2.
 func trimTextRange(text1, text2 string, start1, start2, end1, end2 int) util.Range {

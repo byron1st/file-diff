@@ -18,7 +18,7 @@ go get github.com/byron1st/file-diff
 import (
     "strings"
 
-    "github.com/byron1st/file-diff/diff/comparison"
+    "github.com/byron1st/file-diff/go/comparison"
 )
 
 text1 := "hello\nworld\nfoo"
@@ -51,7 +51,7 @@ for _, r := range diff.Unchanged() {
 변경된 라인 내에서 단어 단위로 세밀한 차이를 확인합니다.
 
 ```go
-import "github.com/byron1st/file-diff/diff/comparison"
+import "github.com/byron1st/file-diff/go/comparison"
 
 text1 := "the quick brown fox"
 text2 := "the slow brown dog"
@@ -75,7 +75,7 @@ for _, f := range fragments {
 바이트(코드 포인트) 단위의 비교입니다.
 
 ```go
-import "github.com/byron1st/file-diff/diff/comparison"
+import "github.com/byron1st/file-diff/go/comparison"
 
 diff, err := comparison.CompareChars("abcdef", "abXdeZ")
 if err != nil {
@@ -96,7 +96,7 @@ for _, r := range diff.Changes() {
 import (
     "strings"
 
-    "github.com/byron1st/file-diff/diff/comparison"
+    "github.com/byron1st/file-diff/go/comparison"
 )
 
 lines1 := strings.Split(text1, "\n")

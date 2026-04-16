@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 type stubLineMatcher struct {

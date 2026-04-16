@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/byron1st/file-diff/diff/fragment"
+	"github.com/byron1st/file-diff/go/fragment"
 )
 
 // ErrNilLineMatcher is returned when CompareLineFragments is called with a nil matcher.

@@ -6,7 +6,7 @@ package comparison
 import (
 	"testing"
 
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 func TestCompareChars_Identical(t *testing.T) {

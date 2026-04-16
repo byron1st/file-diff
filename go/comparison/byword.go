@@ -6,8 +6,8 @@ package comparison
 import (
 	"unicode/utf8"
 
-	"github.com/byron1st/file-diff/diff/fragment"
-	"github.com/byron1st/file-diff/diff/util"
+	"github.com/byron1st/file-diff/go/fragment"
+	"github.com/byron1st/file-diff/go/util"
 )
 
 // InlineChunk represents a tokenized piece of text (word or newline).
