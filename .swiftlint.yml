@@ -59,6 +59,8 @@ identifier_name:
     - i
     - j
     - k
+    - x
+    - y
 
 # 커스텀 규칙 예시
 custom_rules:
