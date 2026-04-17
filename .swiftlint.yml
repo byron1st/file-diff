@@ -17,6 +17,7 @@ disabled_rules:
   - colon # SwiftFormat이 담당
   - comma # SwiftFormat이 담당
   - sorted_imports # SwiftFormat의 sortImports가 담당 (testable-bottom 정책과 충돌)
+  - trailing_comma # SwiftFormat의 --commas always가 담당
 
 # 기본 비활성화된 규칙 중 활성화할 것들 (opt-in)
 opt_in_rules:
