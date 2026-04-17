@@ -127,4 +127,79 @@ struct HistogramMatcherTests {
         #expect(result.unchanged.isEmpty)
         #expect(result.changes.isEmpty)
     }
+
+    @Test("one side empty yields a single change spanning the other side")
+    func oneSideEmpty() {
+        let result = HistogramMatcher().match(["a", "b", "c"], [], policy: .default)
+        #expect(result.changes.count == 1)
+        #expect(result.changes[0].left == 0..<3)
+        #expect(result.changes[0].right == 0..<0)
+    }
+
+    @Test("trimWhitespaces matches lines differing only by edge whitespace")
+    func trimPolicy() {
+        let result = HistogramMatcher().match(["  hello  ", "world"], ["hello", "world"], policy: .trimWhitespaces)
+        var matched = 0
+        for range in result.unchanged {
+            matched += range.left.count
+        }
+        #expect(matched == 2)
+    }
+
+    @Test("conforms to LineMatcher")
+    func conformance() {
+        let matcher: any LineMatcher = HistogramMatcher()
+        let result = matcher.match(["a", "b"], ["a", "c"], policy: .default)
+        #expect(result.changes.count == 1)
+    }
+
+    @Test("duplicate-only sub-range exercises Myers fallback")
+    func myersFallback() {
+        // Sandwich a duplicate-only sub-range between unique anchors so
+        // histogramDiff recurses into the fallback closure for the middle.
+        let left = ["start", "x", "x", "y", "y", "end"]
+        let right = ["start", "x", "x", "y", "y", "end"]
+        let result = HistogramMatcher().match(left, right, policy: .default)
+        #expect(result.changes.isEmpty)
+        var matched = 0
+        for range in result.unchanged {
+            matched += range.left.count
+        }
+        #expect(matched == 6)
+    }
+}
+
+@Suite("histogramMyersFallback")
+struct HistogramMyersFallbackTests {
+    @Test("empty left returns no anchors")
+    func emptyLeft() {
+        #expect(histogramMyersFallback([], ["a"]).isEmpty)
+    }
+
+    @Test("empty right returns no anchors")
+    func emptyRight() {
+        #expect(histogramMyersFallback(["a"], []).isEmpty)
+    }
+
+    @Test("identical sub-range maps every line to its own index")
+    func identical() {
+        let anchors = histogramMyersFallback(["a", "b", "c"], ["a", "b", "c"])
+        #expect(anchors == [
+            HistogramAnchor(leftIndex: 0, rightIndex: 0),
+            HistogramAnchor(leftIndex: 1, rightIndex: 1),
+            HistogramAnchor(leftIndex: 2, rightIndex: 2),
+        ])
+    }
+
+    @Test("disjoint sub-ranges produce no anchors")
+    func disjoint() {
+        #expect(histogramMyersFallback(["a"], ["b"]).isEmpty)
+    }
+
+    @Test("partial overlap returns matching positions only")
+    func partialOverlap() {
+        let anchors = histogramMyersFallback(["a", "x", "c"], ["a", "y", "c"])
+        #expect(anchors.contains(HistogramAnchor(leftIndex: 0, rightIndex: 0)))
+        #expect(anchors.contains(HistogramAnchor(leftIndex: 2, rightIndex: 2)))
+    }
 }

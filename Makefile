@@ -43,7 +43,7 @@ coverage:
 	go test $(PACKAGES) -coverprofile=coverage.out
 	go tool cover -func=coverage.out | grep total | awk '{print $$3}'
 
-.PHONY: swift-build swift-test swift-check swift-lint swift-format
+.PHONY: swift-build swift-test swift-check swift-lint swift-format swift-coverage
 # Build the Swift package
 swift-build:
 	@swift build
@@ -62,3 +62,13 @@ swift-lint:
 SWIFT_SOURCES := swift/Sources swift/Tests
 swift-format:
 	@swiftformat $(SWIFT_SOURCES) --config .swiftformat
+
+BIN_PATH := $(shell swift build --show-bin-path)
+XCTEST_BUNDLE := $(shell ls $(BIN_PATH) | grep '\.xctest$$' | head -1)
+BUNDLE_NAME := $(shell echo $(XCTEST_BUNDLE) | sed 's/\.xctest//')
+TARGET := $(BIN_PATH)/$(XCTEST_BUNDLE)/Contents/MacOS/$(BUNDLE_NAME)
+PROFDATA := .build/debug/codecov/default.profdata
+
+swift-coverage:
+	@swift test --enable-code-coverage
+	@xcrun llvm-cov report "$(TARGET)" -instr-profile="$(PROFDATA)" --ignore-filename-regex=".build|Tests"

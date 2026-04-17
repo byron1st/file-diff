@@ -138,3 +138,72 @@ struct MyersMatcherTests {
         #expect(result.changes.count == 1)
     }
 }
+
+@Suite("compareLines second-step alignment")
+struct CompareLinesSecondStepTests {
+    // Default policy treats internal-whitespace differences as real changes,
+    // but the first ignoreWhitespaces pass groups them. The second-step
+    // refinement then collects "sample-equal" lines and decides whether
+    // changed-region lines should be re-aligned.
+
+    @Test("sample-equal line sitting inside a change is re-evaluated")
+    func sampleAcrossChangeGap() {
+        // The middle "  a" on the right side falls inside an inserted block
+        // under the ignoreWhitespaces pass. The second-step inspects it and
+        // sees that it is sample-equal to the left-side "  a", but since the
+        // exact match still differs, it leaves the change in place.
+        let left = split("X\n  a\nY")
+        let right = split("X\n a\n  a\nY")
+        let result = compareLines(left, right, policy: .default)
+        #expect(!result.changes.isEmpty)
+        let totalChange = result.changes.reduce(0) { $0 + $1.left.count + $1.right.count }
+        #expect(totalChange >= 1)
+    }
+
+    @Test("symmetric sample blocks with equal counts trigger fast alignment")
+    func sampleEqualCounts() {
+        // Two ws-different "a" lines on each side under default policy.
+        // The unchanged ignoreWS pairing is symmetric, so flushSecondStep
+        // walks the sub1.count == sub2.count branch (skipAligning fast path).
+        let left = split("X\n  a\nY\n  a\nZ")
+        let right = split("X\n a\nY\n a\nZ")
+        let result = compareLines(left, right, policy: .default)
+        // Anchors X / Y / Z stay aligned; "a" lines remain as changes.
+        #expect(result.changes.count >= 1)
+    }
+
+    @Test("trimWhitespaces resolves all changes for repeated whitespace-only lines")
+    func trimResolvesRepeatedSamples() {
+        let left = split(" same\nfoo\n same\n")
+        let right = split("same\nfoo\nsame\n")
+        let result = compareLines(left, right, policy: .trimWhitespaces)
+        #expect(result.changes.isEmpty)
+    }
+}
+
+@Suite("convertMode")
+struct ConvertModeTests {
+    @Test("same policy keeps existing line instances")
+    func samePolicy() {
+        let lines = toLines(["a", "b"], policy: .default)
+        let converted = convertMode(lines, policy: .default)
+        #expect(converted[0] === lines[0])
+        #expect(converted[1] === lines[1])
+    }
+
+    @Test("different policy creates new line instances")
+    func differentPolicy() {
+        let lines = toLines(["  a", "b  "], policy: .default)
+        let converted = convertMode(lines, policy: .ignoreWhitespaces)
+        #expect(converted[0] !== lines[0])
+        #expect(converted[1] !== lines[1])
+        #expect(converted[0].policy == .ignoreWhitespaces)
+        #expect(converted[1].policy == .ignoreWhitespaces)
+        #expect(converted[0].content == "  a")
+    }
+
+    @Test("empty input returns empty array")
+    func empty() {
+        #expect(convertMode([], policy: .default).isEmpty)
+    }
+}
