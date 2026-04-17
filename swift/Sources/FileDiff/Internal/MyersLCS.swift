@@ -58,7 +58,6 @@ final class MyersLCS {
         try execute(threshold: max(heuristic, deltaThresholdSize), throwing: true)
     }
 
-    @discardableResult
     private func execute(threshold: Int, throwing: Bool) throws {
         if count1 == 0 || count2 == 0 {
             return
