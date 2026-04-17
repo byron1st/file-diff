@@ -5,7 +5,7 @@
 - **Source**: https://github.com/JetBrains/intellij-community
 - **License**: Apache License 2.0
 - **Copyright**: Copyright 2000-2025 JetBrains s.r.o. and contributors.
-- **Usage**: Core diff comparison engine (line/word/char-level diff, ComparisonPolicy, iterables, fragments) ported from Kotlin/Java to Go.
+- **Usage**: Core diff comparison engine (line/word/char-level diff, ComparisonPolicy, iterables, fragments) ported from Kotlin/Java to Go, then to Swift.
 
 The full text of the Apache License 2.0 is available in the [LICENSE](LICENSE) file.
 

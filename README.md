@@ -2,7 +2,7 @@
 
 JetBrains IntelliJ IDEA의 diff 엔진을 Go로 포팅한 라이브러리입니다. 라인, 워드, 문자 수준의 다단계 비교를 지원합니다.
 
-> **Swift 지원**: SwiftUI macOS 앱에서 사용할 수 있는 Swift 포팅을 진행 중입니다 (SPM 타겟명 `FileDiff`, macOS 13+). 현재는 스켈레톤만 제공됩니다.
+> **Swift 지원**: SwiftUI macOS 앱에서 라이브러리로 임포트해 사용할 수 있는 Swift 포팅을 제공합니다 (SPM 타겟명 `FileDiff`, macOS 13+). 아래 [Swift 사용법](#swift-사용법)을 참고하세요.
 
 ## 설치
 
@@ -201,6 +201,50 @@ type LineFragment struct {
     InnerFragments []DiffFragment  // 워드/문자 수준 세부 변경 (nil 가능)
 }
 ```
+
+## Swift 사용법
+
+Swift Package Manager를 통해 의존성으로 추가할 수 있습니다 (macOS 13+, Swift 6.0+).
+
+```swift
+// Package.swift
+dependencies: [
+    .package(url: "https://github.com/byron1st/file-diff.git", branch: "main")
+],
+targets: [
+    .target(name: "YourApp", dependencies: [
+        .product(name: "FileDiff", package: "file-diff")
+    ])
+]
+```
+
+Go API와 동일한 3계층(Line / Word / Char) 비교를 제공합니다.
+
+```swift
+import FileDiff
+
+let lines1 = ["hello", "world", "foo"]
+let lines2 = ["hello", "changed", "foo"]
+
+// 라인 비교 — Myers / Patience / Histogram 매처 선택 가능
+let result = HistogramMatcher().match(lines1, lines2, policy: .default)
+for range in result.changes {
+    print("left[\(range.left.lowerBound)..<\(range.left.upperBound)] -> " +
+          "right[\(range.right.lowerBound)..<\(range.right.upperBound)]")
+}
+
+// 워드 비교 (바이트 오프셋 기준)
+let fragments = compareWords("the quick brown fox", "the slow brown dog", policy: .default)
+
+// 라인 + 인라인 워드 비교를 한 번에
+let lineFragments = compareLineFragments(
+    lines1, lines2,
+    matcher: HistogramMatcher(),
+    policy: .default
+)
+```
+
+비교 정책은 `ComparisonPolicy.default` / `.trimWhitespaces` / `.ignoreWhitespaces` 세 가지를 지원합니다. 오프셋은 모두 UTF-8 바이트 기준으로 Go 버전과 일치합니다.
 
 ## 라이선스
 
