@@ -42,3 +42,23 @@ PACKAGES := $(shell go list ./... | grep -v -E '$(EXCLUDE)')
 coverage:
 	go test $(PACKAGES) -coverprofile=coverage.out
 	go tool cover -func=coverage.out | grep total | awk '{print $$3}'
+
+.PHONY: swift-build swift-test swift-check swift-lint swift-format
+# Build the Swift package
+swift-build:
+	@swift build
+
+# Run Swift tests
+swift-test:
+	@swift test
+
+# Validate the Swift package (build + test)
+swift-check: swift-format swift-lint
+
+# Run SwiftLint in strict mode (warnings = errors)
+swift-lint:
+	@swiftlint lint --config .swiftlint.yml --strict
+
+SWIFT_SOURCES := swift/Sources swift/Tests
+swift-format:
+	@swiftformat $(SWIFT_SOURCES) --config .swiftformat

@@ -2,6 +2,8 @@
 
 JetBrains IntelliJ IDEA의 diff 엔진을 Go로 포팅한 라이브러리입니다. 라인, 워드, 문자 수준의 다단계 비교를 지원합니다.
 
+> **Swift 지원**: SwiftUI macOS 앱에서 사용할 수 있는 Swift 포팅을 진행 중입니다 (SPM 타겟명 `FileDiff`, macOS 13+). 현재는 스켈레톤만 제공됩니다.
+
 ## 설치
 
 ```bash
