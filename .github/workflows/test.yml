@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  go-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -16,4 +16,11 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: make test
+      - run: make go-test
+
+  swift-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - run: make swift-test
