@@ -50,6 +50,27 @@ func diff(_ data1: [Int], _ data2: [Int]) -> FairDiffIterable {
     return createFromChanges(node, length1: data1.count, length2: data2.count)
 }
 
+/// Enumerates `Hashable` values to integer IDs and runs Myers on the result.
+func diffObjects<T: Hashable>(_ data1: [T], _ data2: [T]) -> FairDiffIterable {
+    var table: [T: Int] = [:]
+    table.reserveCapacity(data1.count + data2.count)
+    var nextID = 1
+
+    func intern(_ value: T) -> Int {
+        if let id = table[value] {
+            return id
+        }
+        let id = nextID
+        nextID += 1
+        table[value] = id
+        return id
+    }
+
+    let ints1 = data1.map(intern)
+    let ints2 = data2.map(intern)
+    return diff(ints1, ints2)
+}
+
 /// Collects `markEqual` calls and produces a `FairDiffIterable`.
 class ChangeBuilder {
     let length1: Int
