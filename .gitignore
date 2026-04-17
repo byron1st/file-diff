@@ -56,3 +56,10 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+# Swift / SwiftPM
+.build/
+.swiftpm/
+Package.resolved
+*.xcodeproj
+.swiftlint-baseline.json
